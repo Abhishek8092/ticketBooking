@@ -1,11 +1,11 @@
 import { put, takeEvery, select } from 'redux-saga/effects';
 
-import SelectionActions from './actions.types';
-import { BASE_URL } from '../../constants';
+import SelectionActions from './actions.types';  
+// import jsonData from '../../../public/Seat.json'
 
 function* fetchVenues() {
     try {
-        const apiResult = yield fetch(`${BASE_URL}/get-venues`).then(res => res.json());
+        const apiResult = yield fetch(`http://localhost:8080/venues/allTheater`).then(res => res.json());
         yield put({
             type: SelectionActions.FETCH_VENUES_SUCCESS, payload: apiResult
         });
@@ -18,9 +18,11 @@ function* fetchVenues() {
 
 function* fetchAvailabilities() {
     try {
-        let movieId = yield select((state) => state.selectionReducer.selectedMovie.movie_id);
-        let venue = yield select((state) => state.selectionReducer.selectedVenue);
-        const apiResult = yield fetch(`${BASE_URL}/get-availability/${movieId}/${venue}`).then(res => res.json());
+        let movieId = yield select((state) => state.selectionReducer.selectedMovie);
+        console.log(movieId)
+        let venueName = yield select((state) => state.selectionReducer.selectedVenue);
+        const apiResult = yield fetch(`/Seat.json
+        ${venueName}`).then(res => res.json());
         yield put({
             type: SelectionActions.FETCH_AVAILABILITIES_SUCCESS, payload: apiResult
         });
@@ -33,7 +35,7 @@ function* fetchAvailabilities() {
 
 function* modifyAvailabilities(action) {
     try {
-        let movieId = yield select((state) => state.selectionReducer.selectedMovie.movie_id);
+        let movieId = yield select((state) => state.selectionReducer.selectedMovie._id);
         let venue = yield select((state) => state.selectionReducer.selectedVenue);
         let selectedSeats = yield select((state) => state.selectionReducer.selectedSeats);
         let reqBody = {
@@ -44,7 +46,7 @@ function* modifyAvailabilities(action) {
         };
         reqBody = JSON.stringify(reqBody);
 
-        const apiResult = yield fetch(`${BASE_URL}/set-availability`, {
+        const apiResult = yield fetch(`http://localhost:8080/seats/book`, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json; charset=UTF-8'

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom'
+import { withRouter,useHistory} from 'react-router-dom'
 
 import './index.css';
 
@@ -9,21 +9,17 @@ import MovieTile from '../MovieTile'
 import { fetchMovies } from './actions';
 import { setSelectedMovie } from '../SeatSelection/actions';
 
-function Home({ fetchMovies, allMovies, history, loading, apiError, setSelectedMovie }) {
-
+function Home({ fetchMovies, allMovies, loading, apiError }) {
     useEffect(() => {
         fetchMovies();
     }, []);
-
+      const history=useHistory();
     const showMovieInfo = (selectedMovie) => {
-        setSelectedMovie(selectedMovie);
-        history.push('/movie-ticket-booking-ui/details');
+        history.push('/SeatSelection');
     }
-
     const renderMovies = () => {
-        return allMovies.map((movie) => <MovieTile key={movie._id} {...movie} onMovieClick={() => showMovieInfo(movie)} />);
+        return allMovies.map((movie) => <MovieTile key={movie.movie_title} {...movie} onMovieClick={() =>showMovieInfo(movie) } />);
     }
-
     return (
         <div>
             <Header />
